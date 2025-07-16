@@ -6,16 +6,18 @@ class ToDo:
         self.root = root
         self.root.title("To-Do List")
         self.tasks = []
-        self.task_entry = tk.Entry(root, width=40)
+        self.task_entry = tk.Entry(root, width=45)
         self.task_entry.pack(pady=10)
-        self.add_button = tk.Button(root, text="Add Task", width=20, command=self.add_task)
-        self.add_button.pack()
         self.task_listbox = tk.Listbox(root, width=50, selectmode=tk.SINGLE)
         self.task_listbox.pack(pady=10)
-        self.complete_button = tk.Button(root, text="Mark as Completed", command=self.complete_task)
-        self.complete_button.pack(pady=2)
+        self.add_button = tk.Button(root, text="Add Task", command=self.add_task)
+        self.add_button.pack(pady=2)
         self.remove_button = tk.Button(root, text="Remove Task", command=self.remove_task)
         self.remove_button.pack(pady=2)
+        self.complete_button = tk.Button(root, text="Mark as Completed", command=self.complete_task)
+        self.complete_button.pack(pady=2)
+        self.task_entry.bind("<Return>", lambda event: self.add_task())
+        self.update_listbox()
 
     def add_task(self):
         task_text = self.task_entry.get().strip()
@@ -25,6 +27,8 @@ class ToDo:
             self.task_entry.delete(0, tk.END)
         else:
             messagebox.showwarning("Input Error", "Task cannot be empty.")
+        self.task_entry.focus()
+
 
     def complete_task(self):
         selected = self.task_listbox.curselection()
@@ -44,6 +48,9 @@ class ToDo:
         for task in self.tasks:
             display = f"[{'✓' if task['completed'] else ' '}] {task['task']}"
             self.task_listbox.insert(tk.END, display)
+            if task["completed"]:
+                self.task_listbox.itemconfig(tk.END, fg="blue")
+
 
 if __name__ == "__main__":
     root = tk.Tk()
